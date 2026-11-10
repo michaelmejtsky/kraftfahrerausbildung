@@ -52,3 +52,7 @@ Damit führen persönliche Einladungslinks zur richtigen App. Der komplette Teil
 
 - https://developers.cloudflare.com/workers/wrangler/configuration/
 - https://developers.cloudflare.com/workers/ci-cd/builds/configuration/
+
+## GitHub-Pages-Einstieg
+
+`index.html` im Repository-Stamm leitet bei einer Branch-Veröffentlichung nach `dist/` weiter und erhält Einladungsfragmente. Der reguläre Actions-Workflow veröffentlicht `dist/` direkt. Für nur einen Veröffentlichungsweg unter Settings → Pages → Source „GitHub Actions“ auswählen.
