@@ -1,0 +1,11 @@
+{
+  "name": "kraftfahrerausbildung",
+  "main": "backend/cloudflare-worker.js",
+  "compatibility_date": "2026-11-10",
+  "workers_dev": true,
+  "keep_vars": true,
+  "vars": {
+    "KF_SCRIPT_URL": "https://script.google.com/macros/s/AKfycbwbevI22kxtnFXhbmcHCNNVX5ROfr_pbYOoEzyzmxA3mbV3gYY24stmozNL29LjxRq7ag/exec",
+    "KF_APP_ORIGINS": "https://michaelmejtsky.github.io"
+  }
+}

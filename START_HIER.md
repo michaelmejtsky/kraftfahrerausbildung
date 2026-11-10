@@ -9,6 +9,10 @@ Dieses Repository ist ein **eigenes System**, getrennt von der Grundausbildung.
 3. Unter **Actions** den Workflow „Kraftfahrerausbildung prüfen und veröffentlichen“ kontrollieren. Ein vor der Pages-Aktivierung fehlgeschlagener Lauf kann mit **Re-run failed jobs** fortgesetzt werden.
 4. Die tatsächlich veröffentlichte App-Adresse wird nach einem erfolgreichen Lauf in GitHub Pages und in der Workflow-Zusammenfassung angezeigt.
 
+## Aktueller nächster Schritt
+
+Die neue Apps-Script-Bereitstellung ist erreichbar. Die fertige Cloudflare-Konfiguration liegt in [wrangler.jsonc](wrangler.jsonc). Weiter geht es mit [CLOUDFLARE_EINRICHTUNG.md](CLOUDFLARE_EINRICHTUNG.md): passenden Worker-Schlüssel als Cloudflare-Secret hinterlegen und die eigene Worker-Adresse mit der App verbinden.
+
 ## Eigenes Backend verbinden
 
 1. Neue private Google-Tabelle **Kraftfahrerausbildung** anlegen.

@@ -2,7 +2,7 @@
 
 Eigenständige Ausbildungsplattform der Feuerwehr St. Pölten-Stadt.
 
-Starte mit [START_HIER.md](START_HIER.md).
+Starte mit [START_HIER.md](START_HIER.md). Die aktuelle API-Einrichtung steht in [CLOUDFLARE_EINRICHTUNG.md](CLOUDFLARE_EINRICHTUNG.md).
 
 Die [Installationsanleitung](INSTALLATION.md) beschreibt Backend, Rechte, Datenhaltung, Einrichtung und den genauen Funktionsumfang. Bestehende GAB-Daten oder Zugangsdaten sind nicht enthalten.
 
