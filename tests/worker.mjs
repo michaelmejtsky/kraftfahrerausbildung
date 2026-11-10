@@ -1,0 +1,11 @@
+import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
+const source=fs.readFileSync('backend/cloudflare-worker.js','utf8').replace('export default','globalThis.worker =');let upstreamBody;
+const ctx={Response,AbortSignal,JSON,Number,fetch:async(url,options)=>{upstreamBody=JSON.parse(options.body);assert.equal(url,'https://script.google.com/macros/s/own-deployment/exec');return new Response(JSON.stringify({ok:true,data:{version:'1.0.0'}}),{headers:{'Content-Type':'application/json'}});}};vm.createContext(ctx);vm.runInContext(source,ctx);
+const env={KF_SCRIPT_URL:'https://script.google.com/macros/s/own-deployment/exec',KF_WORKER_KEY:'private-test-only',KF_APP_ORIGINS:'https://kf.example.test'},req=(origin,body='{}',method='POST')=>new Request('https://worker.example.test',{method,headers:{Origin:origin,'Content-Type':'application/json'},...(method==='POST'?{body}:{})});
+let res=await ctx.worker.fetch(req('https://other.example.test'),env);assert.equal(res.status,403);
+res=await ctx.worker.fetch(req('https://kf.example.test','{}','OPTIONS'),env);assert.equal(res.status,204);
+res=await ctx.worker.fetch(req('https://kf.example.test',JSON.stringify({action:'state',token:'abc',workerKey:'injected'})),env);assert.equal(res.status,200);assert.equal(upstreamBody.workerKey,'private-test-only');assert.equal(upstreamBody.token,'abc');assert(!(await res.text()).includes('private-test-only'));assert.equal(res.headers.get('Cache-Control'),'no-store');
+res=await ctx.worker.fetch(req('https://kf.example.test',JSON.stringify({action:'state'})),{...env,KF_SCRIPT_URL:''});assert.equal(res.status,503);
+res=await ctx.worker.fetch(req('https://kf.example.test','{not json'),env);assert.equal(res.status,502);
+res=await ctx.worker.fetch(req('https://kf.example.test','x'.repeat(3000001)),env);assert.equal(res.status,413);
+console.log('PASS: worker origin restriction, preflight, server-side key injection, missing configuration, invalid JSON, request size, private response headers.');

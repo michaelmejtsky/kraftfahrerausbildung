@@ -1,0 +1,47 @@
+name: Kraftfahrerausbildung prüfen und veröffentlichen
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: kraftfahrer-pages
+  cancel-in-progress: false
+jobs:
+  checks:
+    name: Code prüfen und Downloads vorbereiten
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Ausbildungslogik, Rechte und Oberfläche prüfen
+        run: |
+          node tests/domain.cjs
+          node tests/frontend.cjs
+          node tests/worker.mjs
+          node --check dist/app.js
+          node -e "new Function(require('fs').readFileSync('backend/Code.gs','utf8'))"
+      - name: Installationspaket und GS-Textdatei erstellen
+        run: python3 pack.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    name: App über GitHub Pages veröffentlichen
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Pages-Konfiguration prüfen
+        uses: actions/configure-pages@v5
+      - name: App veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4
