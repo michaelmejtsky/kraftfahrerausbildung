@@ -1,36 +1,30 @@
 # Kraftfahrerausbildung – hier beginnen
 
-Dieses Repository ist ein **eigenes System**, getrennt von der Grundausbildung.
+Eigenständiges System der Feuerwehr St. Pölten-Stadt, getrennt von der Grundausbildung.
 
-## App veröffentlichen
+## Bestehendes System auf 1.1.0 aktualisieren
 
-1. Im Repository **Settings → Pages** öffnen.
-2. Unter **Build and deployment → Source** die Option **GitHub Actions** wählen.
-3. Unter **Actions** den Workflow „Kraftfahrerausbildung prüfen und veröffentlichen“ kontrollieren. Ein vor der Pages-Aktivierung fehlgeschlagener Lauf kann mit **Re-run failed jobs** fortgesetzt werden.
-4. Die tatsächlich veröffentlichte App-Adresse wird nach einem erfolgreichen Lauf in GitHub Pages und in der Workflow-Zusammenfassung angezeigt.
+1. Vollständige [backend/Code.gs](backend/Code.gs) in das **bestehende Kraftfahrerausbildungs-Skript** einsetzen und speichern.
+2. Einmal **`kfErweiterungenEinrichten`** ausführen. Die vorhandene Datenbank bleibt bestehen; nur Zusatz-Tabellen und Mailtrigger werden ergänzt.
+3. **Bereitstellen → Bereitstellungen verwalten → bestehende Web-App bearbeiten → Neue Version → Bereitstellen.** Die vorhandene `/exec`-Adresse behalten.
+4. App neu laden; in **Einstellungen → Systemstand** Backend **1.1.0** und eingerichtete Zusatz-Tabellen kontrollieren.
 
-## Aktueller nächster Schritt
+Keine neue Datenbank anlegen, keine Konten neu erstellen und keinen Cloudflare-Schlüssel ändern. Keine GAB-Dateien ersetzen. Die vollständige neue GS-Datei enthält auch die bisherigen Fahrzeug-, Quiz- und Berichtsabläufe.
 
-Die neue Apps-Script-Bereitstellung ist erreichbar. Die fertige Cloudflare-Konfiguration liegt in [wrangler.jsonc](wrangler.jsonc). Weiter geht es mit [CLOUDFLARE_EINRICHTUNG.md](CLOUDFLARE_EINRICHTUNG.md): passenden Worker-Schlüssel als Cloudflare-Secret hinterlegen und die eigene Worker-Adresse mit der App verbinden.
+Danach unter **Team & Berechtigungen** Ausbildungschefs/Ausbilder berechtigen und die Prüfungsfahrzeuge freigeben. Jede Teilnehmeransicht lässt sich oben über **Ansicht eines Kontos öffnen** schreibgeschützt ansehen. Nachweisanfragen für bestehende Teilnehmer sind unter **Checkliste & Scheine** möglich.
 
-## Eigenes Backend verbinden
+Details: [Rechte, Teilnehmeransicht und Nachweise](RECHTE_UND_NACHWEISE.md).
 
-1. Neue private Google-Tabelle **Kraftfahrerausbildung** anlegen.
-2. Darin Apps Script öffnen und den vollständigen Inhalt von [backend/Code.gs](backend/Code.gs) einsetzen.
-3. `kfEinrichten`, danach `kfAdminEinrichten` ausführen.
-4. Als **neue** Web-App bereitstellen. Eigene `/exec`-Adresse verwenden.
-5. Eigenen Cloudflare Worker aus [backend/cloudflare-worker.js](backend/cloudflare-worker.js) anlegen und die in der Anleitung beschriebenen Variablen/Secrets einstellen.
-6. Nur die **neue Worker-Adresse** in [dist/config.js](dist/config.js) eintragen.
-7. `kfVerbindungEinrichten` im neuen Apps Script ausführen und die endgültige App-Adresse hinterlegen.
+## Veröffentlichung
 
-Die bestehende Grundausbildung nicht umstellen. **Keine GAB-Schlüssel oder GAB-Backend-Adresse verwenden.**
+App: https://michaelmejtsky.github.io/kraftfahrerausbildung/
 
-## GS herunterladen
+API: https://kraftfahrerausbildung.michael-mejtsky.workers.dev/
 
-[backend/Code.gs](backend/Code.gs) öffnen und auf GitHub über **Download raw file** herunterladen. Alternativ **Raw** öffnen und den vollständigen Text kopieren.
+GitHub → **Settings → Pages → Source: GitHub Actions**. Der Workflow prüft Rechte und Ausbildungslogik und veröffentlicht nur die App-Dateien aus `dist/`. Bei einer Codeänderung im Apps Script muss zusätzlich dessen bestehende Bereitstellung aktualisiert werden.
 
-Nach erfolgreicher Pages-Veröffentlichung stehen zusätzlich im Bereich **Einrichtung** das Installationspaket und eine Textfassung des GS zum Download bereit. Die Textfassung wird aus derselben `backend/Code.gs` erzeugt.
+## Ersteinrichtung eines separaten weiteren Systems
 
-Die vollständige Beschreibung aller Schritte steht in [INSTALLATION.md](INSTALLATION.md).
+Nur für ein wirklich neues System die [Installationsanleitung](INSTALLATION.md) befolgen. Für das bereits verbundene System oben den Updateweg verwenden. Die [Cloudflare-Anleitung](CLOUDFLARE_EINRICHTUNG.md) beschreibt die bestehende Verbindung.
 
-Ohne eingerichtete Google-/Cloudflare-Verbindung bleibt die App ausdrücklich im Einrichtungsmodus. Erst die Oberfläche online zu stellen aktiviert noch keinen Teilnehmerbetrieb.
+Projektdateien liegen im GitHub-Repository. Ein lokales Installationspaket kann mit `python3 pack.py` unter `artifacts/` erzeugt werden; es wird nicht mit der öffentlichen App ausgeliefert. Das öffentliche Repository enthält keine Teilnehmer- oder Dokumentdaten und keine Worker-Secrets.

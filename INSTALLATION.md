@@ -1,12 +1,16 @@
 # Kraftfahrerausbildung · Feuerwehr St. Pölten-Stadt
 
-Version 1.0.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
+Version 1.1.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
+
+## Update eines bereits eingerichteten Systems
+
+Das Kraftfahrerausbildungssystem ist bereits mit eigenem Apps Script und Cloudflare verbunden. **Für ein Update keine neue Datenbank anlegen.** Den vollständigen GS einsetzen, `kfErweiterungenEinrichten` ausführen und die bestehende Bereitstellung mit neuer Version aktualisieren. Die genaue Anleitung und Rechteübersicht stehen in [RECHTE_UND_NACHWEISE.md](RECHTE_UND_NACHWEISE.md). Die Schritte zur Ersteinrichtung weiter unten gelten ausschließlich für ein neues separates System.
 
 ## Was bereits enthalten ist
 
-- Eigene Rollen Administrator, Ausbilder und Teilnehmer; eigene Anmeldung und persönliche Einladungs-/Passwortlinks.
+- Eigene Rollen Oberadmin, Ausbildungschef, Ausbilder und Teilnehmer; eigene Anmeldung und persönliche Einladungs-/Passwortlinks.
 - Teilnehmer: Vorname, Nachname, Standesbuchnummer, E-Mail, Telefon, Ausbildungsbeginn, Führerscheinklassen mit eigenen Ablaufdaten und optionales Ablaufdatum des Feuerwehrführerscheins.
-- Private PDF/JPEG/PNG-Nachweise für Führerschein und Feuerwehrführerschein, bis 2 MB pro Datei. Vorhandene Kopien werden nicht überschrieben.
+- Private PDF/JPEG/PNG-Nachweise mit Checkliste, Prüfung und Gültigkeitsangaben für Führerschein, Feuerwehrführerschein, Kran-, Boots- und Staplerschein, bis 2 MB pro Datei. Vorhandene Kopien werden nicht überschrieben.
 - Fahrzeuge mit Reihenfolge, technischen Daten, frei benannten Geräteräumen, Beladung und ausdrücklich konfigurierbaren akzeptierten Führerscheinklassen.
 - Fahrzeugausbildungen: Inhalte, Ziele, Lernabschnitte, erforderliche Einschulungen, Theorie, optionale praktische Prüfung, Präsentation, Dokumentenlinks, Arbeitsmaterial und verantwortliche Ausbilder.
 - Quiz: Auswahlfragen, Richtig/Falsch, Ja/Nein sowie Beladung dem richtigen Geräteraum zuordnen (Ziehen oder Auswahlfelder am Handy). Pflicht-/freiwillige Quiz, Bestehensgrenze, Versuchslimit und Zusatzversuche.
@@ -17,15 +21,15 @@ Version 1.0.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.
 - Abschließen eines Tätigkeitsberichts rechnet eine Einschulung je Teilnehmer und Fahrzeugausbildung an. Wiederholtes Abschließen erzeugt keine weiteren Einschulungen. Sieben getrennte bestätigte Übungen ergeben z. B. sieben Einschulungen auf dem WLF 3.
 - Tatsächliche Mitwirkungsdauer je Ausbilder, Teilnehmer-/Ausbilderstunden, Standesbuchnummern, private PDF-Berichte und Mailversand. Ohne erfasste Fahrzeuge/Kilometer werden diese Angaben weggelassen.
 - In-App-Benachrichtigungen bei Zuordnung, bestandenem Quiz, Abschluss, Terminen und Ablauf-Erinnerungen. **Web Push auf geschlossene Geräte ist in dieser eigenständigen Erstversion nicht integriert.**
-- Übersicht, persönlicher Ausbildungspass und Führerscheinerinnerungen 60/30/7 Tage vor Ablauf sowie bei Ablauf; tägliche Meldungen derselben Erinnerungsstufe werden vermieden.
-- Anerkennung vorhandener Fahrzeugausbildungen durch Ausbilder mit Datum und Begründung.
+- Übersicht, persönlicher Ausbildungspass und Nachweiserinnerungen ab sechs Kalendermonaten vor Ablauf, monatlich und bei 30/7 Tagen sowie nach Ablauf, per In-App-Meldung und E-Mail an Teilnehmer und berechtigte Chefs; tägliche Meldungen derselben Erinnerungsstufe werden vermieden.
+- Anerkennung vorhandener Fahrzeugausbildungen durch berechtigte Ausbildungschefs/Oberadmins mit Datum und Begründung.
 - Anforderungen werden bei der Zuordnung festgehalten. Inhaltsänderungen erhöhen die Kursversion, ziehen bestehende Erfolge aber nicht zurück. Neue Anforderungen gelten für neu zugeordnete Ausbildungen. Neue Kurse werden bestehenden Teilnehmern nur bewusst zugeordnet.
 
-## Betriebsstatus bei Übergabe
+## Betriebsstatus
 
-Der vollständige Quellcode liegt im eigenen Repository `michaelmejtsky/kraftfahrerausbildung`. Die Veröffentlichung über GitHub Pages erfolgt durch den enthaltenen Workflow, sobald Pages mit der Quelle „GitHub Actions“ aktiviert wurde. Es wurde **noch keine produktive neue Google-Tabelle, Apps-Script-Bereitstellung oder Cloudflare-Worker-Verbindung eingerichtet**. Die App zeigt ohne konfigurierte API ausdrücklich „Einrichtung offen“ und keine fiktiven Teilnehmer oder Ausbildungsstände.
+Das eigene Repository `michaelmejtsky/kraftfahrerausbildung`, Apps Script und Cloudflare sind verbunden. Das Update 1.1.0 benötigt zusätzlich die manuelle Aktualisierung der bestehenden Apps-Script-Bereitstellung. Die Oberfläche meldet ein altes Backend oder noch fehlende Zusatz-Tabellen.
 
-Die bestehende Grundausbildung und ihre Daten wurden nicht verändert. Keinen Code in das vorhandene GAB-Skript einsetzen und nicht die bestehende GAB-API verwenden.
+Die bestehende Grundausbildung bleibt getrennt. Keinen KF-Code in das GAB-Skript einsetzen und nicht die GAB-API verwenden.
 
 ## 1. Neue private Tabelle und neues Apps Script
 
@@ -56,7 +60,7 @@ Beispiel eines Ursprungs bei GitHub Pages: `https://michaelmejtsky.github.io`. F
 
 ## 3. App veröffentlichen und verbinden
 
-Die Ordnerstruktur ist ein eigenständiges Projekt. Für ein eigenes neues GitHub-Repository kannst du den kompletten Inhalt übernehmen. Die enthaltene `.github/workflows/pages.yml` prüft den Code, erstellt die Downloads und veröffentlicht ausschließlich `dist/` über GitHub Pages. In GitHub → Settings → Pages als Quelle **GitHub Actions** wählen. Falls der erste Lauf vor dieser Aktivierung fehlgeschlagen ist: unter Actions den Lauf öffnen und **Re-run failed jobs** wählen. Alternativ nur den Inhalt von `dist/` bei einem statischen Hoster bereitstellen.
+Die Ordnerstruktur ist ein eigenständiges Projekt. Für ein eigenes neues GitHub-Repository kannst du den kompletten Inhalt übernehmen. Die enthaltene `.github/workflows/pages.yml` prüft den Code, erstellt das Installationspaket nur lokal unter `artifacts/` und veröffentlicht ausschließlich `dist/` über GitHub Pages. In GitHub → Settings → Pages als Quelle **GitHub Actions** wählen. Falls der erste Lauf vor dieser Aktivierung fehlgeschlagen ist: unter Actions den Lauf öffnen und **Re-run failed jobs** wählen. Alternativ nur den Inhalt von `dist/` bei einem statischen Hoster bereitstellen.
 
 1. In `dist/config.js` deine **neue Worker-Adresse** eintragen:
 
@@ -70,13 +74,13 @@ window.KF_API_URL = 'https://DEIN-NEUER-WORKER.workers.dev';
 
 ## 4. Sinnvolle Reihenfolge bei der Ersteinrichtung
 
-1. Ausbilder unter **Einstellungen → Ausbilderzugänge** anlegen, Standesbuchnummern eintragen und persönliche Einladung erstellen.
+1. Ausbildungschefs und Ausbilder unter **Team & Berechtigungen** anlegen, Standesbuchnummern eintragen, einzelne Rechte und Prüfungsfahrzeuge freigeben und persönliche Einladung erstellen.
 2. **Fahrzeuge** anlegen, technische Daten, Geräteräume, Beladung, Reihenfolge und akzeptierte Führerscheinklassen erfassen.
 3. **Ausbildungen** anlegen, Zahl der Einschulungen, Theorie und Quiz, praktische Prüfung sowie eventuelle vorausgehende Fahrzeuge konfigurieren.
 4. **Teilnehmer** aufnehmen und Führerscheinkopien hochladen. Gültige aktive Ausbildungen werden bei Aufnahme zugeordnet. Über „Ausbildung zuordnen“ können Ausbilder später gezielt ergänzen.
 5. Einladungslinks erstellen oder ausdrücklich per Mail senden. Einladungen sind 7 Tage gültig. Das ist unabhängig von den 60-Tage-Checklistenlinks der Grundausbildung.
 6. Berichtsempfänger unter **Einstellungen → Berichtsversand** eintragen. Mit gespeicherten Empfängern wird der fertige Bericht beim Abschluss automatisch mit erklärendem Text versendet.
-7. Im Apps Script `kfErinnerungenEinrichten` ausführen. Das richtet eine tägliche Prüfung um ungefähr 08:00 Uhr Wiener Zeit ein. Apps-Script-Zeittrigger können zeitlich schwanken. Nur ein Trigger wird angelegt.
+7. Im Apps Script `kfErweiterungenEinrichten` ausführen. Das richtet eine tägliche Prüfung um ungefähr 08:00 Uhr Wiener Zeit ein. Apps-Script-Zeittrigger können zeitlich schwanken. Nur ein Trigger wird angelegt.
 
 ## 5. Donnerstag und außerordentliche Übungen
 
@@ -112,6 +116,7 @@ Führerscheinklassen und Abläufe werden nach deiner Konfiguration erfasst. Die 
 
 ```sh
 node tests/domain.cjs
+node tests/access-evidence.cjs
 node tests/frontend.cjs
 node tests/worker.mjs
 node --check dist/app.js

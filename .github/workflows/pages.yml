@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   checks:
-    name: Code prüfen und Downloads vorbereiten
+    name: Code und Rechte prüfen
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,11 +20,13 @@ jobs:
       - name: Ausbildungslogik, Rechte und Oberfläche prüfen
         run: |
           node tests/domain.cjs
+          node tests/access-evidence.cjs
           node tests/frontend.cjs
           node tests/worker.mjs
           node --check dist/app.js
+          node --check dist/access-evidence.js
           node -e "new Function(require('fs').readFileSync('backend/Code.gs','utf8'))"
-      - name: Installationspaket und GS-Textdatei erstellen
+      - name: Lokales Installationspaket prüfen
         run: python3 pack.py
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -7,3 +7,7 @@ node_modules/
 artifacts/
 .wrangler/
 .dev.vars.*
+
+# Lokale Browserprüfung
+.openai/
+dist/qa-access.*
