@@ -1,3 +1,2 @@
-// Eigene Cloudflare-Worker-Adresse der KRAFTFAHRERAUSBILDUNG eintragen.
-// Niemals die bestehende Grundausbildungs-API hier verwenden.
-window.KF_API_URL = '';
+// Eigene API der Kraftfahrerausbildung. Keine Zugangsdaten im Frontend.
+window.KF_API_URL = 'https://kraftfahrerausbildung.michael-mejtsky.workers.dev/';
