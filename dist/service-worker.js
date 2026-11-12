@@ -1,4 +1,4 @@
-const CACHE='kf-shell-1.3.0';
+const CACHE='kf-shell-1.4.0';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./access-evidence.js','./push-ui.js','./install-ui.js','./staff-proofs.js','./icon-192.png','./icon-512.png','./config.js','./icon.svg','./manifest.webmanifest'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('kf-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
