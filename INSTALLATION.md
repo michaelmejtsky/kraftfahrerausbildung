@@ -1,10 +1,18 @@
 # Kraftfahrerausbildung · Feuerwehr St. Pölten-Stadt
 
-Version 1.6.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
+Version 2.0.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
 
 ## Update eines bereits eingerichteten Systems
 
 Das Kraftfahrerausbildungssystem ist bereits mit eigenem Apps Script und Cloudflare verbunden. **Für ein Update keine neue Datenbank anlegen.** Den vollständigen GS einsetzen, `kfErweiterungenEinrichten` ausführen und die bestehende Bereitstellung mit neuer Version aktualisieren. Die genaue Anleitung und Rechteübersicht stehen in [RECHTE_UND_NACHWEISE.md](RECHTE_UND_NACHWEISE.md). Die Schritte zur Ersteinrichtung weiter unten gelten ausschließlich für ein neues separates System.
+
+## Lern- und Prüfungsbereich aktualisieren (2.0.0)
+
+Den vollständigen aktuellen Haupt-GS in der vorhandenen Datei `Code.gs` ersetzen und speichern. Danach im bestehenden Projekt einmal `kfErweiterungenEinrichten` ausführen. Es werden ausschließlich die fehlenden Tabellen `KF_CourseVersions`, `KF_LearningProgress`, `KF_SkillChecks`, `KF_PracticalExams` und `KF_PracticeAttempts` ergänzt. Vorhandene Tabellen, Daten, Konten, Dokumente und Zugangsschlüssel werden nicht ersetzt.
+
+Anschließend **Bereitstellen → Bereitstellungen verwalten → Bearbeiten → Neue Version → Bereitstellen** verwenden. Die bestehende URL behalten. Die zusätzliche HLF-2-Importdatei und die Quiz-Zusatzdatei können unverändert im Projekt bleiben. Keine Inhalte aus Google Sheets entfernen und keine neue Datenbank anlegen.
+
+Die Bedienung, Rechte, Bestandsschutz und Unterschiede zwischen Üben und Prüfung stehen in [LERNEN_UND_PRUEFEN.md](LERNEN_UND_PRUEFEN.md).
 
 ## HLF 2 aus der Ausbildungsunterlage übernehmen (1.6.0)
 

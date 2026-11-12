@@ -2,7 +2,7 @@
 
 Eigenständige Ausbildungsplattform der Feuerwehr St. Pölten-Stadt.
 
-Starte mit [START_HIER.md](START_HIER.md). Das Update **1.6.0** ergänzt Bereiche innerhalb von Geräteräumen und einen geschützten HLF-2-Import; die Schritte stehen in [INSTALLATION.md](INSTALLATION.md). Rechte, Ausbildungsfortschritt, Termine, Nachweise und Geräte-Push sind in [RECHTE_UND_NACHWEISE.md](RECHTE_UND_NACHWEISE.md) beschrieben. Die API-Einrichtung steht in [CLOUDFLARE_EINRICHTUNG.md](CLOUDFLARE_EINRICHTUNG.md).
+Starte mit [START_HIER.md](START_HIER.md). Das Update **2.0.0** ergänzt den persönlichen Lernpfad, getrenntes Üben und Prüfen, praktische Fähigkeiten und Prüfungsbögen sowie die Ausbildungsübersicht. Anleitung: [LERNEN_UND_PRUEFEN.md](LERNEN_UND_PRUEFEN.md). Bestehende Rechte, Scheine, Nachweise und Abschlüsse bleiben erhalten. Rechte, Ausbildungsfortschritt, Termine, Nachweise und Geräte-Push sind in [RECHTE_UND_NACHWEISE.md](RECHTE_UND_NACHWEISE.md) beschrieben. Die API-Einrichtung steht in [CLOUDFLARE_EINRICHTUNG.md](CLOUDFLARE_EINRICHTUNG.md).
 
 Die [Installationsanleitung](INSTALLATION.md) beschreibt Backend, Rechte, Datenhaltung, Einrichtung und den genauen Funktionsumfang. Bestehende GAB-Daten oder Zugangsdaten sind nicht enthalten.
 

@@ -29,12 +29,15 @@ jobs:
           node tests/training-ui.cjs
           node tests/hlf2-import.cjs
           node tests/hlf2-ui.cjs
+          node tests/learning-domain.cjs
+          node tests/learning-ui.cjs
           node tests/staff-invite-ui.cjs
           node tests/worker.mjs
           node --check dist/app.js
           node --check dist/access-evidence.js
           node --check dist/push-ui.js
           node --check dist/training-extensions.js
+          node --check dist/learning-ui.js
           node -e "new Function(require('fs').readFileSync('backend/Code.gs','utf8'))"
       - name: Lokales Installationspaket prüfen
         run: python3 pack.py

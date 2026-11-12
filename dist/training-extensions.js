@@ -2,7 +2,7 @@
 // Dieselbe Anmeldung kann zusätzlich die eigene Teilnehmeransicht öffnen.
 let kfOwnTrainingMode=false;
 const kfTrainingApiBase=api;
-const kfOwnTrainingActions=new Set(['state','learningComplete','startQuiz','submitQuiz','appointment','declareEvidence','uploadEvidence','download','readNotifications']);
+const kfOwnTrainingActions=new Set(['state','learningComplete','startQuiz','submitQuiz','readChapter','startPractice','submitPractice','saveQuizDraft','appointment','declareEvidence','uploadEvidence','download','readNotifications']);
 api=async function(action,data={}){
   const payload=kfOwnTrainingMode&&kfOwnTrainingActions.has(action)?{...data,_selfTraining:true}:data;
   try{return await kfTrainingApiBase(action,payload);}finally{if(action==='logout')kfOwnTrainingMode=false;}
