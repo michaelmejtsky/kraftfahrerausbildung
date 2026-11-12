@@ -17,3 +17,5 @@ body.kf-auth-mode{background:#122c3c;color:#183344;min-width:0}
 /* Verhindert horizontales Verschieben der Übersicht auf schmalen Geräten. */
 .dashboard-grid,.two-cols,.dashboard-grid>*,.two-cols>*,.quick-grid,.quick{min-width:0}
 @media(max-width:900px){.dashboard-grid,.two-cols{grid-template-columns:minmax(0,1fr)}.quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.quick{overflow-wrap:anywhere}}
+
+.kf-install-button{border:1px solid #bdd2d2;background:#f0f7f6;color:#1b615b;border-radius:9px;padding:9px 12px;font-weight:700;font-size:12px;white-space:nowrap}.kf-install-button[hidden]{display:none}.install-sidebar{width:100%;margin-bottom:14px;background:#254858;color:#fff;border-color:#57727d;text-align:left}.install-login{margin-top:16px;width:100%;background:transparent;color:#d7e8ec;border-color:#7995a0;font-size:14px;padding:12px}.install-login:hover{background:#ffffff12}@media(max-width:650px){.install-top{font-size:11px;padding:8px}.top-actions{gap:5px}}@media(max-width:370px){.install-top{font-size:10px;padding:6px}}
