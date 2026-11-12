@@ -20,15 +20,18 @@ jobs:
       - name: Ausbildungslogik, Rechte und Oberfläche prüfen
         run: |
           node tests/domain.cjs
+          node tests/setup-migration.cjs
           node tests/access-evidence.cjs
           node tests/push.cjs
           node tests/push-service-worker.cjs
           node tests/push-ui.cjs
           node tests/frontend.cjs
+          node tests/training-ui.cjs
           node tests/worker.mjs
           node --check dist/app.js
           node --check dist/access-evidence.js
           node --check dist/push-ui.js
+          node --check dist/training-extensions.js
           node -e "new Function(require('fs').readFileSync('backend/Code.gs','utf8'))"
       - name: Lokales Installationspaket prüfen
         run: python3 pack.py

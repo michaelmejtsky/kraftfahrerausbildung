@@ -1,10 +1,18 @@
 # Kraftfahrerausbildung · Feuerwehr St. Pölten-Stadt
 
-Version 1.2.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
+Version 1.5.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
 
 ## Update eines bereits eingerichteten Systems
 
 Das Kraftfahrerausbildungssystem ist bereits mit eigenem Apps Script und Cloudflare verbunden. **Für ein Update keine neue Datenbank anlegen.** Den vollständigen GS einsetzen, `kfErweiterungenEinrichten` ausführen und die bestehende Bereitstellung mit neuer Version aktualisieren. Die genaue Anleitung und Rechteübersicht stehen in [RECHTE_UND_NACHWEISE.md](RECHTE_UND_NACHWEISE.md). Die Schritte zur Ersteinrichtung weiter unten gelten ausschließlich für ein neues separates System.
+
+## Eigenes Ausbildungsprofil und Termine (1.5.0)
+
+Nach dem Update einmal `kfErweiterungenEinrichten` ausführen. Die fehlende Tabelle `KF_TrainingEvents` wird in der bestehenden Datenbank ergänzt; vorhandene Daten und Zugangsschlüssel bleiben erhalten. Danach die bestehende Web-App-Bereitstellung mit einer neuen Version aktualisieren.
+
+Im Menü können Ausbilder über „Meine Fahrzeugausbildung“ ihr eigenes Profil zum bestehenden Konto anlegen. Berechtigte ordnen ihnen anschließend Fahrzeugausbildungen zu. Sind E-Mail oder Standesbuchnummer bereits einem anderen Mitglied zugeordnet, wird kein Duplikat und keine automatische Zusammenführung angelegt. Die praktische Prüfung und Bestätigung müssen von einer anderen für das Fahrzeug berechtigten Person kommen. Tätigkeitsberichte dürfen auch für die eigene Anwesenheit erstellt werden; für eine angerechnete eigene Einschulung ist eine andere ausbildende Person einzutragen.
+
+Unter „Ausbildungstermine“ können Oberadmin und Ausbildungschefs mit dem Recht „Ausbildungen bearbeiten“ Termine als Entwurf speichern, veröffentlichen, ändern oder absagen. Veröffentlichte Termine mit Schwerpunkt erscheinen bei Teilnehmern und Ausbildern. Benachrichtigungen werden für neue, geänderte und abgesagte veröffentlichte Termine vorgemerkt.
 
 ## Was bereits enthalten ist
 
