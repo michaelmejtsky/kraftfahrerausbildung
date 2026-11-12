@@ -84,7 +84,7 @@ Beispiel eines Ursprungs bei GitHub Pages: `https://michaelmejtsky.github.io`. F
 
 ## 3. App veröffentlichen und verbinden
 
-Die Ordnerstruktur ist ein eigenständiges Projekt. Für ein eigenes neues GitHub-Repository kannst du den kompletten Inhalt übernehmen. Die enthaltene `.github/workflows/pages.yml` prüft den Code, erstellt das Installationspaket nur lokal unter `artifacts/` und veröffentlicht ausschließlich `dist/` über GitHub Pages. In GitHub → Settings → Pages als Quelle **GitHub Actions** wählen. Falls der erste Lauf vor dieser Aktivierung fehlgeschlagen ist: unter Actions den Lauf öffnen und **Re-run failed jobs** wählen. Alternativ nur den Inhalt von `dist/` bei einem statischen Hoster bereitstellen.
+Die Ordnerstruktur ist ein eigenständiges Projekt. Für ein eigenes neues GitHub-Repository kannst du den kompletten Inhalt übernehmen. Die enthaltene `.github/workflows/pages.yml` prüft den Code, erstellt das Installationspaket nur lokal unter `artifacts/` und bereitet mit `prepare-pages.py` ausschließlich die App-Dateien aus `dist/` für GitHub Pages vor. Die Oberfläche wird sowohl an der Hauptadresse als auch unter dem bisherigen `/dist/`-Pfad ausgeliefert. So bleiben installierte PWAs und gespeicherte Links verwendbar. In GitHub → Settings → Pages als Quelle **GitHub Actions** wählen. Falls der erste Lauf vor dieser Aktivierung fehlgeschlagen ist: unter Actions den Lauf öffnen und **Re-run failed jobs** wählen. Alternativ nur den Inhalt von `dist/` bei einem statischen Hoster bereitstellen.
 
 1. In `dist/config.js` deine **neue Worker-Adresse** eintragen:
 

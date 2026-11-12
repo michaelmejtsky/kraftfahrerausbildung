@@ -41,9 +41,13 @@ jobs:
           node -e "new Function(require('fs').readFileSync('backend/Code.gs','utf8'))"
       - name: Lokales Installationspaket prüfen
         run: python3 pack.py
+      - name: Bisherige App-Adressen erhalten
+        run: |
+          python3 tests/pages-package.py
+          python3 prepare-pages.py
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: .pages
   deploy:
     name: App über GitHub Pages veröffentlichen
     needs: checks
