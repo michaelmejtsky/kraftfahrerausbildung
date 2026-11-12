@@ -1,10 +1,18 @@
 # Kraftfahrerausbildung · Feuerwehr St. Pölten-Stadt
 
-Version 1.5.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
+Version 1.6.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
 
 ## Update eines bereits eingerichteten Systems
 
 Das Kraftfahrerausbildungssystem ist bereits mit eigenem Apps Script und Cloudflare verbunden. **Für ein Update keine neue Datenbank anlegen.** Den vollständigen GS einsetzen, `kfErweiterungenEinrichten` ausführen und die bestehende Bereitstellung mit neuer Version aktualisieren. Die genaue Anleitung und Rechteübersicht stehen in [RECHTE_UND_NACHWEISE.md](RECHTE_UND_NACHWEISE.md). Die Schritte zur Ersteinrichtung weiter unten gelten ausschließlich für ein neues separates System.
+
+## HLF 2 aus der Ausbildungsunterlage übernehmen (1.6.0)
+
+Die Angaben aus der Unterlage von September 2016 sind vor Freigabe mit dem tatsächlichen Fahrzeug zu vergleichen. Zuerst den persönlich bereitgestellten vollständigen GS mit den Fahrzeugdaten in das **bestehende** Kraftfahrer-Skript einsetzen, speichern und die **bestehende** Web-App-Bereitstellung als neue Version aktualisieren. Im öffentlichen Repository sind diese Fahrzeugdaten nicht enthalten. Für den HLF-2-Import allein werden keine neuen Tabellen angelegt und kein weiterer Einrichtungslauf benötigt.
+
+Im Apps-Script-Editor `kfHLF2Vorschau` ausführen und das Ausführungsprotokoll ansehen. Bei `ready` anschließend `kfHLF2Importieren` einmal ausführen. Bei `conflict` ist bereits ein HLF-2-Fahrzeug vorhanden; der Import verändert und überschreibt es nicht. Erst den Bestand prüfen, bevor weitergearbeitet wird. Eine Wiederholung nach erfolgreichem Import verändert die Daten nicht.
+
+Angelegt werden Geräteraum 1 links mit Bereichen 1–4 und Geräteraum 2 rechts mit Bereichen 5–7; Kabine, Mannschaftsraum und Dach stehen getrennt in den Lernabschnitten. Die Ausbildung wird mit sechs praktischen Einschulungen als **inaktiver Entwurf** angelegt. Ein Quiz, bestimmte Führerscheinklassen, Teilnehmerzuordnungen und Mitteilungen werden nicht automatisch angelegt. Der Entwurf muss vor Aktivierung einschließlich Theorie und praktischer Prüfung kontrolliert und ergänzt werden. Die ursprüngliche PDF-Datei und ihre Bilder werden nicht hochgeladen.
 
 ## Eigenes Ausbildungsprofil und Termine (1.5.0)
 
