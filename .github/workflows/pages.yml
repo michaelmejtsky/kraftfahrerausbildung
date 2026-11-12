@@ -26,6 +26,7 @@ jobs:
           node tests/push-service-worker.cjs
           node tests/push-ui.cjs
           node tests/frontend.cjs
+          node tests/startup.cjs
           node tests/training-ui.cjs
           node tests/hlf2-import.cjs
           node tests/hlf2-ui.cjs
@@ -33,6 +34,7 @@ jobs:
           node tests/learning-ui.cjs
           node tests/staff-invite-ui.cjs
           node tests/worker.mjs
+          node --check dist/startup.js
           node --check dist/app.js
           node --check dist/access-evidence.js
           node --check dist/push-ui.js
