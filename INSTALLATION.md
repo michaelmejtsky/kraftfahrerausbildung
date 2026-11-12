@@ -1,6 +1,6 @@
 # Kraftfahrerausbildung · Feuerwehr St. Pölten-Stadt
 
-Version 1.1.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
+Version 1.2.0 · eigenständiges System nach dem Konzept der Grundausbildung V1.13.16.
 
 ## Update eines bereits eingerichteten Systems
 
@@ -20,14 +20,14 @@ Das Kraftfahrerausbildungssystem ist bereits mit eigenem Apps Script und Cloudfl
 - Je Teilnehmer: mehrere Ausbildungsabschnitte, Fahrzeug, Ausbildungsinhalt, Ort, Ausbilder, weitere Teilnehmer der Ausbildungsgruppe, Dauer und ausdrückliches Anhaken der Anrechnung.
 - Abschließen eines Tätigkeitsberichts rechnet eine Einschulung je Teilnehmer und Fahrzeugausbildung an. Wiederholtes Abschließen erzeugt keine weiteren Einschulungen. Sieben getrennte bestätigte Übungen ergeben z. B. sieben Einschulungen auf dem WLF 3.
 - Tatsächliche Mitwirkungsdauer je Ausbilder, Teilnehmer-/Ausbilderstunden, Standesbuchnummern, private PDF-Berichte und Mailversand. Ohne erfasste Fahrzeuge/Kilometer werden diese Angaben weggelassen.
-- In-App-Benachrichtigungen bei Zuordnung, bestandenem Quiz, Abschluss, Terminen und Ablauf-Erinnerungen. **Web Push auf geschlossene Geräte ist in dieser eigenständigen Erstversion nicht integriert.**
+- In-App-Benachrichtigungen bei Zuordnung, Quizfreigabe/-ergebnis, Abschluss, Terminen und Ablauf-Erinnerungen; bei ausdrücklich aktiviertem Geräte-Push zusätzlich als verschlüsselte Push-Mitteilung. Der Ablauf über die Worker-Warteschlange wird alle fünf Minuten geprüft.
 - Übersicht, persönlicher Ausbildungspass und Nachweiserinnerungen ab sechs Kalendermonaten vor Ablauf, monatlich und bei 30/7 Tagen sowie nach Ablauf, per In-App-Meldung und E-Mail an Teilnehmer und berechtigte Chefs; tägliche Meldungen derselben Erinnerungsstufe werden vermieden.
 - Anerkennung vorhandener Fahrzeugausbildungen durch berechtigte Ausbildungschefs/Oberadmins mit Datum und Begründung.
 - Anforderungen werden bei der Zuordnung festgehalten. Inhaltsänderungen erhöhen die Kursversion, ziehen bestehende Erfolge aber nicht zurück. Neue Anforderungen gelten für neu zugeordnete Ausbildungen. Neue Kurse werden bestehenden Teilnehmern nur bewusst zugeordnet.
 
 ## Betriebsstatus
 
-Das eigene Repository `michaelmejtsky/kraftfahrerausbildung`, Apps Script und Cloudflare sind verbunden. Das Update 1.1.0 benötigt zusätzlich die manuelle Aktualisierung der bestehenden Apps-Script-Bereitstellung. Die Oberfläche meldet ein altes Backend oder noch fehlende Zusatz-Tabellen.
+Das eigene Repository `michaelmejtsky/kraftfahrerausbildung`, Apps Script und Cloudflare sind verbunden. Das Update 1.2.0 benötigt zusätzlich die manuelle Aktualisierung der bestehenden Apps-Script-Bereitstellung. Die Oberfläche meldet ein altes Backend oder noch fehlende Zusatz-Tabellen.
 
 Die bestehende Grundausbildung bleibt getrennt. Keinen KF-Code in das GAB-Skript einsetzen und nicht die GAB-API verwenden.
 
@@ -80,7 +80,7 @@ window.KF_API_URL = 'https://DEIN-NEUER-WORKER.workers.dev';
 4. **Teilnehmer** aufnehmen und Führerscheinkopien hochladen. Gültige aktive Ausbildungen werden bei Aufnahme zugeordnet. Über „Ausbildung zuordnen“ können Ausbilder später gezielt ergänzen.
 5. Einladungslinks erstellen oder ausdrücklich per Mail senden. Einladungen sind 7 Tage gültig. Das ist unabhängig von den 60-Tage-Checklistenlinks der Grundausbildung.
 6. Berichtsempfänger unter **Einstellungen → Berichtsversand** eintragen. Mit gespeicherten Empfängern wird der fertige Bericht beim Abschluss automatisch mit erklärendem Text versendet.
-7. Im Apps Script `kfErweiterungenEinrichten` ausführen. Das richtet eine tägliche Prüfung um ungefähr 08:00 Uhr Wiener Zeit ein. Apps-Script-Zeittrigger können zeitlich schwanken. Nur ein Trigger wird angelegt.
+7. Im Apps Script `kfErweiterungenEinrichten` ausführen. Das richtet eine tägliche Prüfung um ungefähr 08:00 Uhr Wiener Zeit ein. Apps-Script-Zeittrigger können zeitlich schwanken. Bestehende Auslöser werden berücksichtigt; fehlende Auslöser werden ergänzt.
 
 ## 5. Donnerstag und außerordentliche Übungen
 
@@ -108,7 +108,7 @@ window.KF_API_URL = 'https://DEIN-NEUER-WORKER.workers.dev';
 
 Die enthaltenen Prüfungen laufen ausschließlich mit isolierten Daten im Arbeitsspeicher. Es gibt keine produktiven Prüfdaten. Nach der Einrichtung müssen die tatsächliche Google-/Cloudflare-Verbindung, Anmeldung, private Dokumentdownloads und PDF-Konvertierung mit deiner Bereitstellung bestätigt werden. Apps-Script-/Mail-/Drive-Kontingente gelten.
 
-In dieser Erstversion vorhanden: dauerhafte In-App-Benachrichtigungen und ausdrücklich eingerichteter PDF-Mailversand. Nicht Bestandteil: Geräte-Push im Hintergrund, Kalenderabgleich, QR-Anwesenheit oder Offline-Speichern von Ausbildungsnachweisen. Die App-Hülle kann offline geladen werden; personenbezogene Daten und Nachweise werden nicht im Service-Worker-Cache gespeichert.
+In dieser Erstversion vorhanden: dauerhafte In-App-Benachrichtigungen und ausdrücklich eingerichteter PDF-Mailversand. Nicht Bestandteil: Kalenderabgleich, QR-Anwesenheit oder Offline-Speichern von Ausbildungsnachweisen. Die App-Hülle kann offline geladen werden; personenbezogene Daten und Nachweise werden nicht im Service-Worker-Cache gespeichert.
 
 Führerscheinklassen und Abläufe werden nach deiner Konfiguration erfasst. Die App ersetzt keine Prüfung der tatsächlichen Lenkberechtigung. Berichte dienen zur manuellen Übertragung, es gibt keine direkte FDISK-Schnittstelle.
 
@@ -116,6 +116,9 @@ Führerscheinklassen und Abläufe werden nach deiner Konfiguration erfasst. Die 
 
 ```sh
 node tests/domain.cjs
+node tests/push.cjs
+node tests/push-service-worker.cjs
+node tests/push-ui.cjs
 node tests/access-evidence.cjs
 node tests/frontend.cjs
 node tests/worker.mjs

@@ -1,5 +1,9 @@
-const CACHE='kf-shell-1.1.0';
-const ASSETS=['./','./index.html','./styles.css','./app.js','./access-evidence.js','./config.js','./icon.svg','./manifest.webmanifest'];
+const CACHE='kf-shell-1.2.0';
+const ASSETS=['./','./index.html','./styles.css','./app.js','./access-evidence.js','./push-ui.js','./config.js','./icon.svg','./manifest.webmanifest'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('kf-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{const r=e.request,u=new URL(r.url);if(r.method!=='GET'||u.origin!==self.location.origin||!ASSETS.some(x=>new URL(x,self.location.href).pathname===u.pathname))return;e.respondWith(fetch(r,{cache:'no-cache'}).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(r,copy));}return res;}).catch(()=>caches.match(r)));});
+
+// Nur der Ereignistext für das angemeldete, registrierte Gerät wird angezeigt.
+self.addEventListener('push',event=>{let data={};try{data=event.data?event.data.json():{};}catch{}const id=String(data.id||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,100);event.waitUntil(self.registration.showNotification(String(data.title||'Kraftfahrerausbildung').slice(0,100),{body:String(data.body||'Du hast eine neue Mitteilung.').slice(0,240),tag:'kf-'+(id||'mitteilung'),renotify:false,data:{id}}));});
+self.addEventListener('notificationclick',event=>{event.notification.close();event.waitUntil((async()=>{const base=new URL(self.registration.scope),all=await self.clients.matchAll({type:'window',includeUncontrolled:true});for(const client of all){let url;try{url=new URL(client.url);}catch{continue;}if(url.origin===base.origin&&url.pathname.startsWith(base.pathname)){client.postMessage({type:'kf-open-notifications'});return client.focus();}}return self.clients.openWindow(new URL('#notifications',base).href);})());});

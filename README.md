@@ -2,7 +2,7 @@
 
 Eigenständige Ausbildungsplattform der Feuerwehr St. Pölten-Stadt.
 
-Starte mit [START_HIER.md](START_HIER.md). Das Update **1.1.0** mit Ausbildungschefs, Einzelrechten, allen Teilnehmeransichten sowie Nachweisen und Ablaufmails steht in [RECHTE_UND_NACHWEISE.md](RECHTE_UND_NACHWEISE.md). Die API-Einrichtung steht in [CLOUDFLARE_EINRICHTUNG.md](CLOUDFLARE_EINRICHTUNG.md).
+Starte mit [START_HIER.md](START_HIER.md). Das Update **1.2.0** mit Ausbildungschefs, Einzelrechten, allen Teilnehmeransichten sowie Nachweisen, Ablaufmails und Geräte-Push steht in [RECHTE_UND_NACHWEISE.md](RECHTE_UND_NACHWEISE.md). Die API-Einrichtung steht in [CLOUDFLARE_EINRICHTUNG.md](CLOUDFLARE_EINRICHTUNG.md).
 
 Die [Installationsanleitung](INSTALLATION.md) beschreibt Backend, Rechte, Datenhaltung, Einrichtung und den genauen Funktionsumfang. Bestehende GAB-Daten oder Zugangsdaten sind nicht enthalten.
 
@@ -22,6 +22,9 @@ Anforderungen werden bei der Zuordnung festgehalten. Änderungen an Fragen und K
 
 ```sh
 node tests/domain.cjs
+node tests/push.cjs
+node tests/push-service-worker.cjs
+node tests/push-ui.cjs
 node tests/access-evidence.cjs
 node tests/frontend.cjs
 node tests/worker.mjs

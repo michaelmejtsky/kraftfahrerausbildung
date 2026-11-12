@@ -1,6 +1,6 @@
-import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
+import fs from 'node:fs';import {webcrypto} from 'node:crypto';import vm from 'node:vm';import assert from 'node:assert/strict';
 const source=fs.readFileSync('backend/cloudflare-worker.js','utf8').replace('export default','globalThis.worker =');let upstreamBody;
-const ctx={Response,AbortSignal,JSON,Number,fetch:async(url,options)=>{upstreamBody=JSON.parse(options.body);assert.equal(url,'https://script.google.com/macros/s/own-deployment/exec');return new Response(JSON.stringify({ok:true,data:{version:'1.0.0'}}),{headers:{'Content-Type':'application/json'}});}};vm.createContext(ctx);vm.runInContext(source,ctx);
+const ctx={Response,AbortSignal,JSON,Number,URL,Uint8Array,TextEncoder,crypto:webcrypto,atob,btoa,fetch:async(url,options)=>{upstreamBody=JSON.parse(options.body);assert.equal(url,'https://script.google.com/macros/s/own-deployment/exec');return new Response(JSON.stringify({ok:true,data:{version:'1.0.0'}}),{headers:{'Content-Type':'application/json'}});}};vm.createContext(ctx);vm.runInContext(source,ctx);
 const env={KF_SCRIPT_URL:'https://script.google.com/macros/s/own-deployment/exec',KF_WORKER_KEY:'private-test-only',KF_APP_ORIGINS:'https://kf.example.test'},req=(origin,body='{}',method='POST')=>new Request('https://worker.example.test',{method,headers:{Origin:origin,'Content-Type':'application/json'},...(method==='POST'?{body}:{})});
 let res=await ctx.worker.fetch(req('https://other.example.test'),env);assert.equal(res.status,403);
 res=await ctx.worker.fetch(req('https://kf.example.test','{}','OPTIONS'),env);assert.equal(res.status,204);
@@ -8,4 +8,26 @@ res=await ctx.worker.fetch(req('https://kf.example.test',JSON.stringify({action:
 res=await ctx.worker.fetch(req('https://kf.example.test',JSON.stringify({action:'state'})),{...env,KF_SCRIPT_URL:''});assert.equal(res.status,503);
 res=await ctx.worker.fetch(req('https://kf.example.test','{not json'),env);assert.equal(res.status,502);
 res=await ctx.worker.fetch(req('https://kf.example.test','x'.repeat(3000001)),env);assert.equal(res.status,413);
+res=await ctx.worker.fetch(req('https://kf.example.test',JSON.stringify({action:'_pushClaim'})),env);assert.equal(res.status,403);
+const a=await (await ctx.worker.fetch(req('https://kf.example.test',JSON.stringify({action:'pushConfig'})),env)).json();const b=await (await ctx.worker.fetch(req('https://kf.example.test',JSON.stringify({action:'pushConfig'})),env)).json();assert.equal(a.data.publicKey,b.data.publicKey);assert.equal(Buffer.from(a.data.publicKey,'base64url').length,65);assert(!JSON.stringify(a).includes(env.KF_WORKER_KEY));
+assert.equal(ctx.pushDestination('https://fcm.googleapis.com.evil.example/path'),null);assert.equal(ctx.pushDestination('http://fcm.googleapis.com/path'),null);assert(ctx.pushDestination('https://region.web.push.apple.com/path'));assert.equal(ctx.pushDestination('https://evil-push.apple.com/path'),null);
 console.log('PASS: worker origin restriction, preflight, server-side key injection, missing configuration, invalid JSON, request size, private response headers.');
+// Ende-zu-Ende-Verschlüsselung mit einem isolierten lokalen Geräte-Schlüsselpaar prüfen.
+const deviceKeys=await webcrypto.subtle.generateKey({name:'ECDH',namedCurve:'P-256'},true,['deriveBits']);
+const devicePub=new Uint8Array(await webcrypto.subtle.exportKey('raw',deviceKeys.publicKey)),auth=webcrypto.getRandomValues(new Uint8Array(16));
+const localSub={endpoint:'https://fcm.googleapis.com/fcm/send/local-device',p256dh:Buffer.from(devicePub).toString('base64url'),auth:Buffer.from(auth).toString('base64url')};
+async function decrypt(body){
+ const bytes=new Uint8Array(body),salt=bytes.slice(0,16),len=bytes[20],sender=bytes.slice(21,21+len),ciphertext=bytes.slice(21+len);
+ const senderKey=await webcrypto.subtle.importKey('raw',sender,{name:'ECDH',namedCurve:'P-256'},false,[]),shared=new Uint8Array(await webcrypto.subtle.deriveBits({name:'ECDH',public:senderKey},deviceKeys.privateKey,256));
+ const join=(...parts)=>Buffer.concat(parts.map(x=>Buffer.from(x)));
+ const hmac=async(k,m)=>{const key=await webcrypto.subtle.importKey('raw',k,{name:'HMAC',hash:'SHA-256'},false,['sign']);return new Uint8Array(await webcrypto.subtle.sign('HMAC',key,m));};
+ const expand=async(prk,info,len)=>new Uint8Array((await hmac(prk,join(info,Uint8Array.of(1)))).slice(0,len));
+ const enc=new TextEncoder(),prk=await hmac(auth,shared),ikm=await expand(prk,join(enc.encode('WebPush: info'),Uint8Array.of(0),devicePub,sender),32),base=await hmac(salt,ikm),cek=await expand(base,join(enc.encode('Content-Encoding: aes128gcm'),Uint8Array.of(0)),16),nonce=await expand(base,join(enc.encode('Content-Encoding: nonce'),Uint8Array.of(0)),12);
+ const key=await webcrypto.subtle.importKey('raw',cek,'AES-GCM',false,['decrypt']),plain=new Uint8Array(await webcrypto.subtle.decrypt({name:'AES-GCM',iv:nonce},key,ciphertext));assert.equal(plain.at(-1),2);return new TextDecoder().decode(plain.slice(0,-1));
+}
+const encrypted=await ctx.pushEncrypt('Lokal verschlüsselte Nachricht',localSub);assert.equal(await decrypt(encrypted),'Lokal verschlüsselte Nachricht');
+const derived=await ctx.kfVapidKeys(env.KF_WORKER_KEY);assert.equal(derived.publicKey,a.data.publicKey);const jwt=await ctx.kfVapidToken(derived,'https://fcm.googleapis.com','https://kf.example.test'),parts=jwt.split('.'),pub=Buffer.from(derived.publicKey,'base64url');assert.equal(JSON.parse(Buffer.from(parts[1],'base64url')).aud,'https://fcm.googleapis.com');
+const verifyKey=await webcrypto.subtle.importKey('raw',pub,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);assert(await webcrypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},verifyKey,Buffer.from(parts[2],'base64url'),new TextEncoder().encode(parts[0]+'.'+parts[1])));
+let sentPayload,ack;ctx.fetch=async(url,opts)=>{if(url===env.KF_SCRIPT_URL){const p=JSON.parse(opts.body);assert.equal(p.workerKey,env.KF_WORKER_KEY);if(p.action==='_pushClaim')return new Response(JSON.stringify({ok:true,data:{jobs:[{id:'job1',claimId:'claim',notification:{id:'notice1',title:'Gratulation',text:'Du hast bestanden.'},devices:[{id:'device1',subscription:localSub}]}]}}));if(p.action==='_pushAck'){ack=p.data;return new Response(JSON.stringify({ok:true,data:{ok:true}}));}throw Error('Unexpected backend action');}assert.equal(url,localSub.endpoint);assert.match(opts.headers.Authorization,/^vapid t=/);sentPayload=JSON.parse(await decrypt(opts.body));return new Response('',{status:201});};
+let task;await ctx.worker.scheduled({},env,{waitUntil:p=>{task=p;}});await task;assert.equal(sentPayload.id,'notice1');assert.equal(sentPayload.body,'Öffne die App, um deine Nachricht anzusehen.');assert.equal(ack.id,'job1');assert.equal(ack.results[0].ok,true);
+console.log('PASS: deterministic private VAPID key, ES256 signature, encrypted push payload, scheduled delivery and acknowledgement.');

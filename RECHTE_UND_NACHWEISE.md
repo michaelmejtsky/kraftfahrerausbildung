@@ -1,11 +1,11 @@
-# Rechte, Teilnehmeransicht und Nachweise · 1.1.0
+# Rechte, Teilnehmeransicht und Nachweise · 1.2.0
 
 ## Bestehendes System aktualisieren
 
 1. In **deinem bestehenden Kraftfahrerausbildungs-Apps-Script** die vollständige `backend/Code.gs` einsetzen und speichern. Die vorhandene KF-Tabelle und die Skripteigenschaften behalten. Nicht in das GAB-Projekt einsetzen.
-2. Einmal `kfErweiterungenEinrichten` ausführen und gegebenenfalls die Google-Berechtigungen bestätigen. Die Funktion ergänzt `KF_Evidence` und `KF_MailQueue` und richtet zwei Zeittrigger ein. Bestehende Konten, IDs, Einladungen, Zuordnungen, Quizversuche, Einschulungen und Abschlüsse bleiben erhalten. Es entstehen keine Beispieldaten.
+2. Einmal `kfErweiterungenEinrichten` ausführen und gegebenenfalls die Google-Berechtigungen bestätigen. Die Funktion ergänzt fehlende `KF_Evidence`, `KF_MailQueue`, `KF_PushDevices` und `KF_PushQueue` und richtet zwei Zeittrigger ein. Bestehende Konten, IDs, Einladungen, Zuordnungen, Quizversuche, Einschulungen und Abschlüsse bleiben erhalten. Es entstehen keine Beispieldaten.
 3. **Bereitstellen → Bereitstellungen verwalten → bestehende Web-App bearbeiten → Neue Version → Bereitstellen.** Die bisherige `/exec`-Adresse weiterverwenden. Cloudflare-Secret und Worker-Adresse bleiben bestehen.
-4. App neu laden. Unter **Einstellungen → Systemstand** muss Backend **1.1.0** und „Zusatz-Tabellen eingerichtet“ stehen.
+4. App neu laden. Unter **Einstellungen → Systemstand** muss Backend **1.2.0** und „Zusatz-Tabellen eingerichtet“ stehen.
 
 Nur die neue Oberfläche zu veröffentlichen aktiviert keine Serverrechte. Ein Hinweis meldet ein altes Backend oder fehlende Zusatz-Tabellen. Für dieses Update keine neue Datenbank anlegen und `kfAdminEinrichten` nicht erneut ausführen.
 
@@ -63,7 +63,11 @@ Zeittrigger:
 
 Gleicher Anlass/Empfänger erzeugt keine mehrfachen Versandaufträge. Vor Versand werden Rolle, Aktivstatus und Aktualität erneut geprüft. Bei einem unklaren Versandfehler wird **nicht automatisch wiederholt**; unter Einstellungen kann der Oberadmin nach Prüfung der Nichtzustellung erneut vormerken. Bei „Versendet“ hat Google den Sendeaufruf akzeptiert; das ist kein Nachweis einer Zustellung im Posteingang. Google-Kontingente und Spamfilter gelten.
 
-In-App-Meldungen sind dauerhaft enthalten. **Geräte-Push bei geschlossener PWA ist weiterhin nicht integriert.**
+In-App-Meldungen bleiben dauerhaft sichtbar. Zusätzlich kann jeder auf seinem eigenen Gerät unter **Benachrichtigungen** Push einschalten. Auf dem iPhone zuvor die App über Safari zum Home-Bildschirm hinzufügen und von dort öffnen. Beispiele: neue Fahrzeugausbildung, freigeschaltetes Pflicht-/freiwilliges Quiz, Quiz-Ergebnis, Fahrzeugabschluss, Prüfungstermine, Nachweisanfrage und Ablaufwarnungen. Die App zeigt alle Einzelheiten; der verschlüsselte Geräte-Push trägt aus Datenschutzgründen eine allgemeine Beschreibung.
+
+Der Worker ruft die Push-Warteschlange laut `wrangler.jsonc` alle fünf Minuten ab. Die Push-Anmeldung gehört zum aktuellen Konto und Gerät; die explizite Abmeldung deaktiviert sie auf diesem Gerät. Nach erneutem Anmelden Push wieder aktivieren. Für historische Mitteilungen werden keine Pushs nachträglich versandt. Gelesene oder überholte Nachrichten werden nicht verspätet gepusht; bei unklarem Zustellergebnis wird kein automatischer Doppelversuch gestartet. Die Zulieferung an ein Gerät hängt vom Push-Dienst und dessen Einstellungen ab.
+
+Der Worker leitet ein separates Push-Schlüsselpaar aus dem vorhandenen `KF_WORKER_KEY` ab. Es gibt kein neues Secret, das im Frontend oder GitHub gespeichert werden muss. Wenn `KF_WORKER_KEY` absichtlich erneuert wird, müssen die Geräte Push neu aktivieren. Die tatsächlichen Cloudflare-Zeitpläne und die Bereitstellung müssen nach dem Deploy kontrolliert werden.
 
 ## Veröffentlichung und Projektdateien
 
@@ -73,4 +77,4 @@ Das GitHub-Repository ist weiterhin öffentlich; dessen Quellcode ist dadurch gr
 
 ## Prüfungen
 
-`node tests/domain.cjs`, `node tests/access-evidence.cjs`, `node tests/frontend.cjs`, `node tests/worker.mjs` prüfen die Ausbildungslogik, Rechte und private Nachweise, Vorschau, Ablauf-/Versandregeln sowie Oberflächen. Sie arbeiten ausschließlich mit isolierten In-Memory-Daten und verändern keine produktiven Konten. Die produktive Apps-Script-Bereitstellung und Google-Autorisierung müssen nach dem manuellen GS-Update kontrolliert werden.
+`node tests/domain.cjs`, `node tests/push.cjs`, `node tests/push-service-worker.cjs`, `node tests/push-ui.cjs`, `node tests/access-evidence.cjs`, `node tests/frontend.cjs`, `node tests/worker.mjs` prüfen die Ausbildungslogik, Rechte und private Nachweise, Vorschau, Ablauf-/Versandregeln sowie Oberflächen. Sie arbeiten ausschließlich mit isolierten In-Memory-Daten und verändern keine produktiven Konten. Die produktive Apps-Script-Bereitstellung und Google-Autorisierung müssen nach dem manuellen GS-Update kontrolliert werden.

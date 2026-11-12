@@ -1,0 +1,9 @@
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const handlers={},notices=[],messages=[],opened=[],focused=[];let windows=[];
+const sw={location:{origin:'https://example.test',href:'https://example.test/kraftfahrerausbildung/service-worker.js'},registration:{scope:'https://example.test/kraftfahrerausbildung/',showNotification:async(title,opts)=>notices.push({title,opts})},clients:{claim:async()=>{},matchAll:async()=>windows,openWindow:async u=>opened.push(u)},addEventListener:(event,fn)=>handlers[event]=fn,skipWaiting:async()=>{}};
+vm.runInNewContext(fs.readFileSync('dist/service-worker.js','utf8'),{self:sw,URL,caches:{},Response,console});
+(async()=>{let task;handlers.push({data:{json:()=>({id:'safe-id',title:'Bestanden',body:'Gratulation!'})},waitUntil:p=>{task=p;}});await task;assert.equal(notices[0].title,'Bestanden');assert.equal(notices[0].opts.tag,'kf-safe-id');assert.equal(notices[0].opts.renotify,false);
+ windows=[{url:'https://example.test/grundausbildung/',postMessage:m=>messages.push(m),focus:()=>focused.push('wrong')},{url:'https://example.test/kraftfahrerausbildung/',postMessage:m=>messages.push(m),focus:()=>focused.push('correct')}];let closed=false;handlers.notificationclick({notification:{close(){closed=true;}},waitUntil:p=>{task=p;}});await task;assert(closed);assert.deepEqual(focused,['correct']);assert.equal(messages[0].type,'kf-open-notifications');assert.equal(opened.length,0);
+ windows=[];handlers.notificationclick({notification:{close(){}},waitUntil:p=>{task=p;}});await task;assert.equal(opened[0],'https://example.test/kraftfahrerausbildung/#notifications');
+ console.log('PASS: push display, stable event tag, correct app focus and opening notifications.');})().catch(error=>{console.error(error);process.exitCode=1;});
